@@ -253,7 +253,7 @@ class Train():
         else:
             log.i("select", gpu)
         # input_shape = (224, 224, 3)
-        input_shape = (160, 160, 3)
+        input_shape = (128, 128, 3)
         # 启动训练
         try:
             detector = Detector(input_shape=input_shape,
