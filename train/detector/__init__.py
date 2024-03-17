@@ -8,7 +8,7 @@
 '''
 
 
-
+import cv2
 import sys, os
 curr_file_dir = os.path.abspath(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(curr_file_dir)
@@ -36,8 +36,8 @@ from train_base import Train_Base
 class Detector(Train_Base):
     def __init__(self, input_shape=(224, 224, 3), datasets_dir=None, datasets_zip=None, unpack_dir=None, logger = None,
                 max_classes_limit = 15, one_class_min_images_num=100, one_class_max_images_num=2000,
-                allow_reshape=False,
-                support_shapes=( (224, 224, 3), (240, 240, 3) )
+                allow_reshape=True,
+                support_shapes=( (224, 224, 3), (240, 240, 3), (128, 128, 3) , (160, 160, 3))
                 ):
         '''
             input_shape: input shape (height, width)
@@ -425,7 +425,7 @@ class Detector(Train_Base):
         '''
         if not img_shape in self.support_shapes:
             return False
-        self.input_shape = img_shape
+        # self.input_shape = img_shape
         self.log.i(f"input_shape: {self.input_shape}")
         return True
 
@@ -661,7 +661,7 @@ class Detector(Train_Base):
                     return False, "not supported input size, supported: {}".format(self.support_shapes), [], None, None, None
                 input_shape_checked = True
             if img_shape != self.input_shape:
-                msg = f"decode xml {xml_path} ok, but shape {img_shape} not the same as expected: {self.input_shape}"
+                msg = f"line 664, decode xml {xml_path} ok, but shape {img_shape} not the same as expected: {self.input_shape}"
                 if not self.allow_reshape:
                     self.on_warning_message(msg)
                     continue
@@ -754,8 +754,13 @@ class Detector(Train_Base):
         return True, "ok"
 
     def _reshape_image(self, img, to_shape, bboxes):
-        raise Exception("not implemented") # TODO: auto reshape images
+        # raise Exception("not implemented") # TODO: auto reshape images
         new_bboxes = []
+        for bbox in bboxes:
+            new_bbox = [ bbox[0] * to_shape[1] / img.shape[1], bbox[1] * to_shape[0] / img.shape[0],
+                         bbox[2] * to_shape[1] / img.shape[1], bbox[3] * to_shape[0] / img.shape[0], bbox[4] ]
+            new_bboxes.append(new_bbox)
+        img = cv2.resize(img, (to_shape[1], to_shape[0]))
         return img, new_bboxes
 
 

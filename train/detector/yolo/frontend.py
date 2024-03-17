@@ -166,6 +166,7 @@ class YOLO(object):
         # Returns
             batch_generator : BatchGenerator instance
         """
+        print('grid size:', self._yolo_network.get_grid_size())
         batch_generator = create_batch_generator(annotations,
                                                  self._input_size,
                                                  self._yolo_network.get_grid_size(),

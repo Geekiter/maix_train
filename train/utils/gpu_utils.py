@@ -9,7 +9,7 @@
 
 import pynvml
 import os
-import multiprocessing
+# import multiprocessing
 
 class GPU_info:
     def __init__(self, id=-1, name="", mem_free=0, mem_total=0):
@@ -39,11 +39,12 @@ def is_gpu_exist(create_sub_process=True):
     def func(is_exits):
         is_exits.value = func0()
     if create_sub_process:
-        is_exits = multiprocessing.Value("b", False)
-        p = multiprocessing.Process(target=func, args=(is_exits,))
-        p.start()
-        p.join()
-        return True if (is_exits.value != 0) else False
+        return False
+        # is_exits = multiprocessing.Value("b", False)
+        # p = multiprocessing.Process(target=func, args=(is_exits,))
+        # p.start()
+        # p.join()
+        # return True if (is_exits.value != 0) else False
     else:
         return func0()
 
@@ -102,11 +103,11 @@ def select_gpu(memory_require=128*1024*1024, tf_gpu_mem_growth=False, logger=Non
     if not create_sub_process:
         return func0(memory_require, tf_gpu_mem_growth, logger, console)
     else:
-        pipe_rx, pipe_tx = multiprocessing.Pipe(duplex=False)
-        p = multiprocessing.Process(target=func, args=(memory_require, tf_gpu_mem_growth, logger, console, pipe_tx,))
-        p.start()
-        gpu = pipe_rx.recv()
-        p.join()
+        # pipe_rx, pipe_tx = multiprocessing.Pipe(duplex=False)
+        # p = multiprocessing.Process(target=func, args=(memory_require, tf_gpu_mem_growth, logger, console, pipe_tx,))
+        # p.start()
+        # gpu = pipe_rx.recv()
+        # p.join()
         return gpu
 
 
